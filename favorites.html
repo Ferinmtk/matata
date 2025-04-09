@@ -1,0 +1,53 @@
+<!-- favorites.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Favorites - Matata Lyrics</title>
+  <link rel="stylesheet" href="styles/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>❤️ Favorite Lyrics</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="favorites.html">Favorites</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main id="favorites"></main>
+
+  <footer>
+    <p>© 2025 Matata Lyrics</p>
+  </footer>
+
+  <script type="module">
+    import { getFavorites, deleteFavorite } from './scripts/storage.js';
+
+    const container = document.getElementById('favorites');
+    const favorites = getFavorites();
+
+    if (favorites.length === 0) {
+      container.innerHTML = "<p>No favorites yet.</p>";
+    } else {
+      favorites.forEach(({ artist, title, lyrics, id }) => {
+        const div = document.createElement('div');
+        div.className = 'lyrics-box';
+        div.innerHTML = `
+          <h3>${artist} - ${title}</h3>
+          <pre>${lyrics}</pre>
+          <button onclick="removeFavorite(${id})">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    window.removeFavorite = function(id) {
+      deleteFavorite(id);
+      location.reload();
+    }
+  </script>
+</body>
+</html>
