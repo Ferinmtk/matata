@@ -53,5 +53,30 @@ const showLoader = () => {
       return null;
     }
   }
+
+
+
+
+// Function to display lyrics on the page
+function displayLyrics(lyrics, artist, title) {
+    document.getElementById('lyricsTitle').textContent = `${title} by ${artist}`;
+    document.getElementById('lyricsText').textContent = lyrics;
+    document.getElementById('lyricsSection').style.display = 'block';
+  }
   
+  // Function to show an error message
+  function showError(message) {
+    document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorSection').style.display = 'block';
+  }
+
+
+  
+  
+
+
+
+
+
+
   
