@@ -71,12 +71,3 @@ function displayLyrics(lyrics, artist, title) {
   }
 
 
-  
-  
-
-
-
-
-
-
-  
