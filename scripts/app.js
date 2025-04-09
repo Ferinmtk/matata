@@ -41,6 +41,19 @@ const showLoader = () => {
     const data = await res.json();
     return data.lyrics;
   }
+
+  // scripts/artistAPI.js
+  async function fetchArtistInfo(artist) {
+    try {
+      const res = await fetch(`https://theaudiodb.com/api/v1/json/1/search.php?s=${artist}`);
+      const data = await res.json();
+      return data.artists ? data.artists[0] : null;
+    } catch (err) {
+      console.error("Artist fetch error:", err);
+      return null;
+    }
+  }
+  
   
   // Function to display lyrics on the page
   function displayLyrics(lyrics, artist, title) {
