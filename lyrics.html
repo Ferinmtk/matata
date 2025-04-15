@@ -5,21 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Matata Lyrics</title>
   <link rel="stylesheet" href="styles/styles.css" />
+  <!-- Add a little bit of style for the loading spinner -->
+  <style>
+    #loader {
+      display: none;
+      text-align: center;
+    }
+    #loader:before {
+      content: "";
+      border: 4px solid transparent;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
 
-
   <header>
     <h1>Matata Lyrics 🎵</h1>
-
     <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="lyrics.html">Lyrics</a></li>
-            <li><a href="about.html">About</a></li>
-        </ul>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="lyrics.html">Lyrics</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
     </nav>
-</header>
+  </header>
 
   <main>
     <section>
@@ -28,8 +46,8 @@
         <input type="text" id="artistInput" placeholder="Artist" required />
         <input type="text" id="songInput" placeholder="Song Title" required />
         <button id="searchBtn">Search</button>
-      </div> .
-      <div id="loader" style="display:none;">Loading...</div>
+      </div>
+      <div id="loader">Loading...</div> <!-- Updated the loader -->
     </section>
 
     <section id="lyricsSection" style="display:none;">
@@ -37,15 +55,39 @@
       <pre id="lyricsText"></pre>
     </section>
 
+    <section id="artist-details" style="display:none;">
+      <!-- Artist info will be injected here dynamically -->
+    </section>
+
     <section id="errorSection" style="display:none;">
       <p id="errorMessage"></p>
     </section>
+
+    <section id="artistInfoSection" style="display:none;">
+      <h2 id="artistName"></h2> <!-- Artist Name -->
+      <p id="artistLabel"><strong>Label:</strong> <span id="artistLabelText"></span></p> <!-- Artist Label -->
+      <p id="artistGenre"><strong>Genre:</strong> <span id="artistGenreText"></span></p> <!-- Artist Genre -->
+      <p id="artistMood"><strong>Mood:</strong> <span id="artistMoodText"></span></p> <!-- Artist Mood -->
+      <p id="formedYear"><strong>Formed:</strong> <span id="formedYearText"></span></p> <!-- Artist Formed Year -->
+      
+      <h3>Biography</h3>
+      <p id="artistBiography"></p> <!-- Artist Biography -->
+    
+      <h3>Social Media Links</h3>
+      <ul>
+          <li><a href="#" id="facebookLink">Facebook</a></li> <!-- Facebook link -->
+          <li><a href="#" id="twitterLink">Twitter</a></li> <!-- Twitter link -->
+          <li><a href="#" id="artistWebsite" target="_blank">Official Website</a></li> <!-- Website link -->
+      </ul>
+    </section>
+    
+
   </main>
 
   <footer>
     <p>© 2025 Matata Lyrics</p>
   </footer>
 
-  <script src="scripts/app.js"></script>
+  <script src="scripts/app.js" type="module"></script>
 </body>
 </html>

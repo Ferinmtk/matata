@@ -1,73 +1,58 @@
-// Helper function to show and hide the loader
-const showLoader = () => {
-    document.getElementById('loader').style.display = 'block';
-    document.getElementById('lyricsSection').style.display = 'none';
-    document.getElementById('errorSection').style.display = 'none';
-  };
-  
-  const hideLoader = () => {
-    document.getElementById('loader').style.display = 'none';
-  };
-  
-  // Handle the search button click
-  document.getElementById('searchBtn').addEventListener('click', async () => {
-    const artist = document.getElementById('artistInput').value.trim();
-    const title = document.getElementById('songInput').value.trim();
-  
-    // Ensure both fields have values
-    if (!artist || !title) {
-      alert("Please enter both artist and song title.");
-      return;
-    }
-  
-    showLoader();
-  
-    try {
-      const lyrics = await fetchLyrics(artist, title);
-      displayLyrics(lyrics, artist, title);
-    } catch (err) {
-      showError("Could not fetch lyrics.");
-    } finally {
-      hideLoader();
-    }
+import { fetchLyrics } from './lyricsAPI.js';
+import { fetchArtistDetails } from './artistAPI.js';
+import { displayLyrics, showError, showLoader, hideLoader, showArtistDetails } from './ui.js';
+import { saveSearch, getSearches } from './storage.js';
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+  const artist = document.getElementById('artistInput').value.trim();
+  const title = document.getElementById('songInput').value.trim();
+
+  if (!artist || !title) {
+    alert("Please enter both artist and song title.");
+    return;
+  }
+
+  showLoader();
+
+  try {
+    const [lyrics, artistInfo] = await Promise.all([
+      fetchLyrics(artist, title),
+      fetchArtistDetails(artist)
+    ]);
+
+    displayLyrics(lyrics, artist, title);
+    showArtistDetails(artistInfo);
+    saveSearch(artist, title);
+    updateRecentSearches(); // Refresh recent searches UI
+  } catch (err) {
+    showError("Could not fetch lyrics or artist info.");
+    console.error(err); 
+  } finally {
+    hideLoader();
+  }
+});
+
+function updateRecentSearches() {
+  const container = document.getElementById('recentSearches');
+  if (!container) return;
+
+  container.innerHTML = '';
+  const recent = getSearches();
+
+  recent.forEach(({ artist, song }) => {
+    const item = document.createElement('p');
+    item.classList.add('search-history-item');
+    item.textContent = `${artist} - ${song}`;
+    item.addEventListener('click', () => {
+      document.getElementById('artistInput').value = artist;
+      document.getElementById('songInput').value = song;
+      document.getElementById('searchBtn').click();
+    });
+    container.appendChild(item);
   });
-  
-  // Function to fetch lyrics from the API
-  async function fetchLyrics(artist, title) {
-    const res = await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`);
-    if (!res.ok) {
-      throw new Error("Lyrics not found.");
-    }
-    const data = await res.json();
-    return data.lyrics;
-  }
+}
 
-  // scripts/artistAPI.js
-  async function fetchArtistInfo(artist) {
-    try {
-      const res = await fetch(`https://theaudiodb.com/api/v1/json/1/search.php?s=${artist}`);
-      const data = await res.json();
-      return data.artists ? data.artists[0] : null;
-    } catch (err) {
-      console.error("Artist fetch error:", err);
-      return null;
-    }
-  }
-
-
-
-
-// Function to display lyrics on the page
-function displayLyrics(lyrics, artist, title) {
-    document.getElementById('lyricsTitle').textContent = `${title} by ${artist}`;
-    document.getElementById('lyricsText').textContent = lyrics;
-    document.getElementById('lyricsSection').style.display = 'block';
-  }
-  
-  // Function to show an error message
-  function showError(message) {
-    document.getElementById('errorMessage').textContent = message;
-    document.getElementById('errorSection').style.display = 'block';
-  }
-
-
+// Load saved searches on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updateRecentSearches();
+});
